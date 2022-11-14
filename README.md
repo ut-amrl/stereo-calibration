@@ -59,6 +59,19 @@ For example, if you calibrated the left and the right cameras using the images i
 ./calibrate_stereo -n 27 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/1/ -R ../calib_imgs/1/ -l left -r right -o cam_stereo.yml -e jpg
 ```
 
+### Stereo calibration for extrinsics (Using MATLAB essential/fundamental matrices)
+
+Once you use MATLAB's Stereo Camera calibration app to compute the intrinsics for both the left and the right cameras, you can use their intrinsics to calibrate the extrinsics between them. The output file from this script can be called by a rosservice to set the camera info topics being published.
+
+```
+./matlab_to_opencv -u [left_cam_calib].yaml -v [right_cam_calib].yaml -l [stereo calib bash script].bash -r [stereo calib bash script].bash
+```
+
+For example, if your left and right camera calibration files are called `cam_left.yaml` and `cam_right.yaml`, use the following commands to compute the extrinsics.
+
+```
+./matlab_to_opencv -u cam_left.yaml -v cam_right.yaml -l set_leftcam_info.bash -r set_rightcam_info.bash
+```
 ### Undistortion and Rectification
 
 Once you have the stereo calibration data, you can remove the distortion and rectify any pair of images so that the resultant epipolar lines become scan lines.
