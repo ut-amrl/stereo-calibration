@@ -20,10 +20,10 @@ done
 
 python3 file_copier.py $frame_text_file $raw_imgs_dir $imgs_dir
 
-Calibrate left cam
+# Calibrate left cam
 ./build/calibrate -w 10 -h 7 -n $num_imgs -s 0.1 -d $imgs_dir/1/ -i "left" -o "cam_left.yml" -e "jpg"
 
-# # Calibrate right cam
+# Calibrate right cam
 ./build/calibrate -w 10 -h 7 -n $num_imgs -s 0.1 -d $imgs_dir/2/ -i "right" -o "cam_right.yml" -e "jpg"
 
 # Calibrate stereo
