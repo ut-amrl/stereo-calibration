@@ -67,7 +67,7 @@ int main(int argc, char const *argv[])
   fsr["D"] >> D2;
   fsl["T"] >> T;
   fsl["R"] >> R;
-  
+  std::cout << " K1 " << K1 << std::endl;
   printf("Done Calibration\n");
 
   printf("Starting Rectification\n");

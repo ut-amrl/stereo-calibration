@@ -28,4 +28,7 @@ Compiled Object files
 *.app
 
 build/
-calib_imgs/
+CODa_calibration/
+
+.vscode*
+
