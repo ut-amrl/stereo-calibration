@@ -29,8 +29,7 @@ std::string generate_camcal_bash(int img_w, int img_h, Mat D, Mat K, Mat R, Mat 
 
 int main(int argc, char const *argv[])
 {
-  char* leftcalib_file;
-  char* rightcalib_file;
+  char* stereocalib_file;
   char* leftimg_dir;
   char* rightimg_dir;
   char* leftimg_filename;
@@ -41,8 +40,7 @@ int main(int argc, char const *argv[])
   int num_imgs;
 
   static struct poptOption options[] = {
-    { "leftcalib_file",'u',POPT_ARG_STRING,&leftcalib_file,0,"Left camera calibration","STR" },
-    { "rightcalib_file",'v',POPT_ARG_STRING,&rightcalib_file,0,"Right camera calibration","STR" },
+    { "stereocalib_file",'u',POPT_ARG_STRING,&stereocalib_file,0,"OpenCV calibration file","STR" },
     { "leftout_file",'l',POPT_ARG_STRING,&leftout_file,0,"Output calibration filename (YML)","STR" },
     { "rightout_file",'r',POPT_ARG_STRING,&rightout_file,0,"Output calibration filename (YML)","STR" },
     POPT_AUTOHELP
@@ -53,21 +51,25 @@ int main(int argc, char const *argv[])
   int c;
   while((c = popt.getNextOpt()) >= 0) {}
 
-  FileStorage fsl(leftcalib_file, FileStorage::READ);
-  FileStorage fsr(rightcalib_file, FileStorage::READ);
+  FileStorage fs(stereocalib_file, FileStorage::READ);
 
   printf("Starting Calibration\n");
   Mat K1, K2, R, F, E;
   Vec3d T;
   Mat D1, D2;
 
-  fsl["K"] >> K1;
-  fsr["K"] >> K2;
-  fsl["D"] >> D1;
-  fsr["D"] >> D2;
-  fsl["T"] >> T;
-  fsl["R"] >> R;
-  std::cout << " K1 " << K1 << std::endl;
+  fs["K1"] >> K1;
+  fs["K2"] >> K2;
+  fs["D1"] >> D1;
+  fs["D2"] >> D2;
+  fs["T"] >> T;
+  fs["R"] >> R;
+  std::cout << "K1 " << K1 << std::endl;
+  std::cout << "K2 " << K2 << std::endl;
+  std::cout << "D1 " << D1 << std::endl;
+  std::cout << "D2 " << D2 << std::endl;
+  std::cout << "T " << T << std::endl;
+  std::cout << "R " << R << std::endl;
   printf("Done Calibration\n");
 
   printf("Starting Rectification\n");
@@ -78,22 +80,6 @@ int main(int argc, char const *argv[])
   img_size.width = 1224;
   stereoRectify(K1, D1, K2, D2, img_size, R, T, R1, R2, P1, P2, Q);
 
-  // cv::FileStorage fs1(out_file, cv::FileStorage::FORMAT_YAML | cv::FileStorage::WRITE);
-
-  std::stringstream nextMat;
-  std::string procMat;
-
-  // ofstream outfile_stream;
-  // outfile_stream.open(out_file);
-
-  // nextMat << std::fixed << std::setprecision(8) << "rectification_matrix1:\n  rows: 3\n  cols: 3\n  data: " << R1 << "\n";
-  // nextMat << std::fixed << std::setprecision(8) << "projection_matrix1:\n  rows: 3\n  cols: 4\n  data: " << P1 << "\n";
-  // nextMat << std::fixed << std::setprecision(8) << "rectification_matrix2:\n  rows: 3\n  cols: 3\n  data: " << R2 << "\n";
-  // nextMat << std::fixed << std::setprecision(8) << "projection_matrix2:\n  rows: 3\n  cols: 4\n  data: " << P2 << "\n";
-  // procMat = nextMat.str();
-  // std::replace(procMat.begin(), procMat.end(), ';', ',');
-  // outfile_stream << procMat;
-  
   std::string curr_fs_str = generate_camcal_bash(img_size.width, img_size.height, D1, K1, R1, P1);
 
   ofstream leftbash_file;

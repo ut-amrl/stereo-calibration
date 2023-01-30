@@ -1,6 +1,6 @@
 # Input Requirements:
-#   <imgs_dir>/left<%d>.jpg
-#   <imgs_dir>/right<%d>.jpg
+#   <imgs_dir>/1/left<%d>.jpg
+#   <imgs_dir>/2/right<%d>.jpg
 #   where %d is an integer representing the image number
 # 
 # Output:
@@ -20,7 +20,7 @@ done
 
 python3 file_copier.py $frame_text_file $raw_imgs_dir $imgs_dir
 
-# Calibrate left cam
+Calibrate left cam
 ./build/calibrate -w 10 -h 7 -n $num_imgs -s 0.1 -d $imgs_dir/1/ -i "left" -o "cam_left.yml" -e "jpg"
 
 # # Calibrate right cam
@@ -28,3 +28,5 @@ python3 file_copier.py $frame_text_file $raw_imgs_dir $imgs_dir
 
 # Calibrate stereo
 ./build/calibrate_stereo -n $num_imgs -u cam_left.yml -v cam_right.yml -L $imgs_dir/1/ -R $imgs_dir/2/ -l left -r right -o opencv_cam_stereo.yml -e jpg
+
+./build/matlab_to_opencv -u opencv_cam_stereo.yml -l set_leftcam_info.bash -r set_rightcam_info.bash
